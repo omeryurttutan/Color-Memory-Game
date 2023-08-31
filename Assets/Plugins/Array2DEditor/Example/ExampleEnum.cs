@@ -1,9 +1,13 @@
 ﻿namespace Array2DEditor
 {
-    public enum ExampleEnum
+    public enum PinColorType
     {
-        Empty,
-        Moving,
-        Normal
+        empty,
+        blue,
+        red,
+        purple,
+        yellow,
+        green,
+        pink,
     };
 }
