@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
+    public int SameColorCount;
+    public List<Pin>clickablePins;
     public Array2DExampleEnum grid = new Array2DExampleEnum();
     public Pin pinPrefab;
     public float cellSize = 3.0f;
@@ -35,7 +37,7 @@ public class GridManager : MonoBehaviour
 
     public PinColorType GetRandomClickablePinColorType()
     {
-        var clickablePins = new List<Pin>();
+        clickablePins.Clear();
         foreach (var spawnedPin in spawnedPins)
         {
             if (!spawnedPin.isTurnedCorrect)
@@ -43,6 +45,20 @@ public class GridManager : MonoBehaviour
         }
         var rndPin = clickablePins[Random.Range(0,clickablePins.Count)];
         return rndPin.pinColorType;
+        
+    }
+
+    public bool IsColorCountMoreThanOne()
+    {
+        for (int i = 1; i < clickablePins.Count; i++)
+        {
+            if (clickablePins[0].pinColorType == clickablePins[i].pinColorType)
+            {
+                SameColorCount++;
+            }
+        }
+
+        return clickablePins.Count == SameColorCount - 1;
     }
     
     

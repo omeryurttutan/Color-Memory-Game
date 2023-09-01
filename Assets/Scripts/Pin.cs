@@ -21,7 +21,10 @@ public class Pin : MonoBehaviour, IClickable
 
     private void HidePins()
     {
-        transform.DORotate(new Vector3(180,0,0), 1f).SetDelay(3f);
+        transform.DORotate(new Vector3(180,0,0), 1f).SetDelay(3f).OnComplete(() =>
+        {
+            Dice.diceRollButton.transform.DOMove(new Vector3(164f, 60f, 0.3f), 2);
+        });
     }
     
     public void OnTap()
@@ -32,6 +35,7 @@ public class Pin : MonoBehaviour, IClickable
             CheckColor();
         });
         
+
     }
 
     public void OnRelease()
@@ -43,16 +47,27 @@ public class Pin : MonoBehaviour, IClickable
     {
         if (pinColorType == Dice.diceColorType)
         {
-            Debug.Log("doğru");
+           
+            isTurnedCorrect = true;
+            GameManager.instance.ScoreTrackTrue();
             Dice.diceRollButton.transform.DOScale(Vector3.one, .3f).SetEase(Ease.Linear);
+            if (GameManager.instance.GridManager.clickablePins.Count==1)
+            {
+                //finish method
+                Debug.Log("finish");
+            }
         }
         else
         {
-            Debug.Log("yanlış");
+            GameManager.instance.ScoreTrackFalse();
+            
             transform.DORotate(new Vector3(180,0,0), 1f).SetDelay(0.5f);
             Dice.diceRollButton.transform.DOScale(Vector3.one, .3f).SetEase(Ease.Linear);
         }
+        Debug.Log("p1: "+GameManager.instance.Player1Score);
+        Debug.Log("p2: "+GameManager.instance.Player2Score);
     }
+
     
     private IEnumerator FalseColorMatch()
     {

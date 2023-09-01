@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Array2DEditor;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Dice : MonoBehaviour
 {
+    public Pin Pin;
     
     public GameObject sides;
     private Image _image;
@@ -18,6 +20,7 @@ public class Dice : MonoBehaviour
     private void Start()
     {
         _image = GetComponent<Image>();
+            
         diceRollButton.onClick.AddListener(()=>StartCoroutine(RepeatRandomColor()));
         
 
@@ -31,7 +34,7 @@ public class Dice : MonoBehaviour
     private IEnumerator RepeatRandomColor()
     {
         
-        _image.transform.DOMove(new Vector3(164f, 120f, 0.3f), 2);
+        _image.transform.DOMove(new Vector3(164f, 140f, 0.3f), 2);
       
         var gridManagerRef = GameManager.instance.GridManager;
         var oldPinType = PinColorType.Empty;
@@ -39,17 +42,26 @@ public class Dice : MonoBehaviour
         diceRollButton.transform.DOScale(Vector3.zero, .3f).SetEase(Ease.Linear);
         for (int i = 0; i < diceRandomCount; i++)
         {
-            do
+            if (GameManager.instance.GridManager.IsColorCountMoreThanOne())
             {
+                do
+                {
+                    diceColorType = gridManagerRef.GetRandomClickablePinColorType();
+                    yield return null;
+                } while (diceColorType == oldPinType);
+                oldPinType = diceColorType;
+            }
+            else
                 diceColorType = gridManagerRef.GetRandomClickablePinColorType();
-                yield return null;
-            } while (diceColorType == oldPinType);
-            oldPinType = diceColorType;
-            
+                
+           
+
             var rndColor = gridManagerRef.GetPinColor(diceColorType); 
             SetColorToImage(rndColor);
             yield return new WaitForSeconds(0.2f);
         }
+
+
         sides.SetActive(true);
         GameManager.instance.InputManager.allowInput = true;
     }
