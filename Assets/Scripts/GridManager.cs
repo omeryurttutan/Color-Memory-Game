@@ -7,44 +7,64 @@ public class GridManager : MonoBehaviour
     public Array2DExampleEnum grid = new Array2DExampleEnum();
     public Pin pinPrefab;
     public float cellSize = 3.0f;
-
+    public List<Pin> spawnedPins;
+    
     private void Start()
     {
+        spawnedPins = new List<Pin>();
         for (int i = 0; i < grid.GridSize.y; i++)
         {
             for (int j = 0; j < grid.GridSize.x; j++)
             {
-                var cell = grid.GetCell(j, i);
-                if (cell != PinColorType.empty)
+                var cell = grid.GetCell(j, grid.GridSize.y - i -1);
+                if (cell != PinColorType.Empty)
                 {
                     Vector3 pinPosition = new Vector3(j * cellSize, 0f, i * cellSize);
                     var newPin = Instantiate(pinPrefab, pinPosition, Quaternion.identity);
                     if (newPin.TryGetComponent(out Pin newPinRef))
                     {
-                        newPinRef.SetColorMaterial(GetPinColor(i,j));
+                        newPinRef.gridPosition = new Vector2Int(j, i);
+                        newPinRef.pinColorType = cell;
+                        newPinRef.SetColorMaterial(GetPinColor(newPinRef.pinColorType));
+                        spawnedPins.Add(newPinRef);
                     }
                 }
             }
         }
     }
 
-    private Color GetPinColor(int i, int j)
+    public PinColorType GetRandomClickablePinColorType()
     {
-        switch (grid.GetCell(j, i))
+        var clickablePins = new List<Pin>();
+        foreach (var spawnedPin in spawnedPins)
         {
-            case PinColorType.empty:
-            case PinColorType.blue:
+            if (!spawnedPin.isTurnedCorrect)
+                clickablePins.Add(spawnedPin);
+        }
+        var rndPin = clickablePins[Random.Range(0,clickablePins.Count)];
+        return rndPin.pinColorType;
+    }
+    
+    
+
+    public Color GetPinColor(PinColorType pinColorType)
+    {
+        switch (pinColorType)
+        {
+            case PinColorType.Empty:
+                return Color.white;
+            case PinColorType.Blue:
                 return Color.blue;
-            case PinColorType.red:
+            case PinColorType.Red:
                 return Color.red;
-            case PinColorType.purple:
+            case PinColorType.Purple:
                 return new Color(148,0,211);
-            case PinColorType.yellow:
+            case PinColorType.Yellow:
                 return Color.yellow;
-            case PinColorType.green:
+            case PinColorType.Green:
                 return Color.green;
-            case PinColorType.pink:
-                return new Color(255,20,147);
+            case PinColorType.Pink:
+                return Color.gray;
             default:
                 break;
         }

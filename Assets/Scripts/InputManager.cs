@@ -6,25 +6,15 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    public bool allowInput = true;
-    public static InputManager instance;
+    public bool allowInput = false;
     public Camera cam; 
     public LayerMask PinLayer;
     
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
     void Update()
     {
-        CheckHitsPin();
+        if (Input.GetMouseButtonDown(0) && allowInput)
+            CheckHitsPin();
+        
     }
     
     private void CheckHitsPin()

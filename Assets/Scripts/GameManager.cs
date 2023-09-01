@@ -6,6 +6,18 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("-- Gameplay Values --")]
+    
+    
+    [Space(3.5f)][Header("-- Manager References --")] 
+    [SerializeField] private GridManager gridManager;
+    [SerializeField] private InputManager inputManager;
+
+    public GridManager GridManager => gridManager;
+    public InputManager InputManager => inputManager;
+    
+    #region Singleton
+
     public static GameManager instance;
 
     private void Awake()
@@ -19,6 +31,11 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    #endregion
+    
+    
+    
     
 
 }

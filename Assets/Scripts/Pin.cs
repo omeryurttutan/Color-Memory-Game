@@ -1,53 +1,37 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Array2DEditor;
 using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class Pin : MonoBehaviour, IClickable
 {
-    public bool PinsHided;
+    public Dice Dice;
+    public Vector2Int gridPosition;
+    public bool isTurnedCorrect;
+    public PinColorType pinColorType;
+    
     [SerializeField] private MeshRenderer colorRenderer;
     private void Start()
     {
        HidePins();
     }
 
-    private void Update()
-    {
-        CheckPins();
-    }
-
     private void HidePins()
     {
-        InputManager.instance.allowInput = false;
-        transform.DORotate(new Vector3(180,0,0), 1f).SetDelay(4f);
+        transform.DORotate(new Vector3(180,0,0), 1f).SetDelay(3f);
     }
     
     public void OnTap()
     {
-        if (InputManager.instance.allowInput)
+        GameManager.instance.InputManager.allowInput = false;
+        transform.DORotate(new Vector3(0,0,0), 1f).OnComplete(() =>
         {
-            transform.DORotate(new Vector3(0,0,0), 1f);
             CheckColor();
-        }
+        });
         
-           
-        
-           
-        
-
-        // if (//doğru renkmi)
-        // {
-        //     //oyuncuya +1 puan
-        // }
-        // else()
-        // {
-        //     //ters dön
-        //     //oyuncu sırası değiştir
-        // }
-
     }
 
     public void OnRelease()
@@ -57,7 +41,17 @@ public class Pin : MonoBehaviour, IClickable
 
     private void CheckColor()
     {
-       
+        if (pinColorType == Dice.diceColorType)
+        {
+            Debug.Log("doğru");
+            Dice.diceRollButton.transform.DOScale(Vector3.one, .3f).SetEase(Ease.Linear);
+        }
+        else
+        {
+            Debug.Log("yanlış");
+            transform.DORotate(new Vector3(180,0,0), 1f).SetDelay(0.5f);
+            Dice.diceRollButton.transform.DOScale(Vector3.one, .3f).SetEase(Ease.Linear);
+        }
     }
     
     private IEnumerator FalseColorMatch()
@@ -68,13 +62,7 @@ public class Pin : MonoBehaviour, IClickable
         // Perform the rotation here
         this.transform.DORotate(new Vector3(0f, 0, 0f), 1f);
     }
-    public IEnumerator Wait(float seconds)
-    {
-       
-        yield return new WaitForSeconds(seconds);
-
-       
-    }
+   
     public void SetColorMaterial(Color newColor)
     {
         if (colorRenderer != null)
@@ -83,11 +71,5 @@ public class Pin : MonoBehaviour, IClickable
         }
     }
 
-    private void CheckPins()
-    {
-        if (gameObject.transform.rotation == Quaternion.Euler(180,0,0))
-        {
-            InputManager.instance.allowInput = true;
-        }
-    }
+   
 }

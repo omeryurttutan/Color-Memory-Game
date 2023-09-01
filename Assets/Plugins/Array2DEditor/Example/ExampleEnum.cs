@@ -2,12 +2,12 @@
 {
     public enum PinColorType
     {
-        empty,
-        blue,
-        red,
-        purple,
-        yellow,
-        green,
-        pink,
+        Empty,
+        Blue,
+        Red,
+        Purple,
+        Yellow,
+        Green,
+        Pink,
     };
 }
