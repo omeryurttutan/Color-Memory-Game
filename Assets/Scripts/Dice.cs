@@ -12,7 +12,7 @@ public class Dice : MonoBehaviour
     public Pin Pin;
     
     public GameObject sides;
-    private Image _image;
+    public Image _image;
     public Button diceRollButton;
     public int diceRandomCount;
     public PinColorType diceColorType;
@@ -20,7 +20,7 @@ public class Dice : MonoBehaviour
     private void Start()
     {
         _image = GetComponent<Image>();
-            
+        _image.transform.localScale = Vector3.zero;
         diceRollButton.onClick.AddListener(()=>StartCoroutine(RepeatRandomColor()));
         
 
@@ -33,13 +33,15 @@ public class Dice : MonoBehaviour
     
     private IEnumerator RepeatRandomColor()
     {
+        GameManager.instance.GridManager.restartButton.gameObject.SetActive(false);
+        _image.gameObject.SetActive(true);
+        _image.gameObject.transform.DOScale(Vector3.one, 3f).SetEase(Ease.OutBack).From(0);
         
-        _image.transform.DOMove(new Vector3(164f, 140f, 0.3f), 2);
       
         var gridManagerRef = GameManager.instance.GridManager;
         var oldPinType = PinColorType.Empty;
         
-        diceRollButton.transform.DOScale(Vector3.zero, .3f).SetEase(Ease.Linear);
+        diceRollButton.transform.DOScale(Vector3.zero, .15f).SetEase(Ease.OutBack);
         for (int i = 0; i < diceRandomCount; i++)
         {
             if (GameManager.instance.GridManager.IsColorCountMoreThanOne())
@@ -53,9 +55,7 @@ public class Dice : MonoBehaviour
             }
             else
                 diceColorType = gridManagerRef.GetRandomClickablePinColorType();
-                
-           
-
+               
             var rndColor = gridManagerRef.GetPinColor(diceColorType); 
             SetColorToImage(rndColor);
             yield return new WaitForSeconds(0.2f);

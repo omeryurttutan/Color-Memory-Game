@@ -1,17 +1,33 @@
+using System;
 using System.Collections.Generic;
 using Array2DEditor;
+using DG.Tweening;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GridManager : MonoBehaviour
 {
+    public GameObject playerTurn;
+    public GameObject timeText;
+    public GameObject restartButton;
+    public GameObject p1;
+    public GameObject p2;
     public int SameColorCount;
     public List<Pin>clickablePins;
     public Array2DExampleEnum grid = new Array2DExampleEnum();
     public Pin pinPrefab;
     public float cellSize = 3.0f;
     public List<Pin> spawnedPins;
-    
+
+   
+
     private void Start()
+    {
+       DisplayGrid();
+    }
+    
+    
+    public void DisplayGrid()
     {
         spawnedPins = new List<Pin>();
         for (int i = 0; i < grid.GridSize.y; i++)
@@ -29,11 +45,27 @@ public class GridManager : MonoBehaviour
                         newPinRef.pinColorType = cell;
                         newPinRef.SetColorMaterial(GetPinColor(newPinRef.pinColorType));
                         spawnedPins.Add(newPinRef);
+                        
+
                     }
                 }
             }
         }
     }
+
+    public void DisplayUI()
+    {
+        p1.gameObject.SetActive(true);
+        p2.gameObject.SetActive(true);
+        restartButton.gameObject.SetActive(true);
+        p1.gameObject.transform.DOScale(Vector3.one, 3f).SetEase(Ease.OutBack).From(0);
+        p2.gameObject.transform.DOScale(Vector3.one, 3f).SetEase(Ease.OutBack).From(0);
+        restartButton.gameObject.transform.DOScale(Vector3.one, 2f).SetEase(Ease.OutBack).SetLoops(-1,LoopType.Yoyo).From(1.3f);
+        timeText.gameObject.SetActive(false);
+        playerTurn.gameObject.SetActive(true);
+    }
+    
+    
 
     public PinColorType GetRandomClickablePinColorType()
     {
@@ -74,13 +106,13 @@ public class GridManager : MonoBehaviour
             case PinColorType.Red:
                 return Color.red;
             case PinColorType.Purple:
-                return new Color(148,0,211);
+                return new Color(0.54f,0.4f,0.84f);
             case PinColorType.Yellow:
                 return Color.yellow;
             case PinColorType.Green:
                 return Color.green;
             case PinColorType.Pink:
-                return Color.gray;
+                return Color.magenta;
             default:
                 break;
         }

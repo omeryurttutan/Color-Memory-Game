@@ -30,7 +30,4 @@ public class InputManager : MonoBehaviour
         }
         
     }
-    
-  
-   
 }
